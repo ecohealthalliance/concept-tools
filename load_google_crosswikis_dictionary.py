@@ -104,7 +104,7 @@ class DictionaryParser():
         print "non_matching_lines", non_matching_lines
 
     def insert(self, form, counts, concepts):
-        if counts['total_count'] > self.min_form_count:
+        if counts['total'] > self.min_form_count:
             try:
                 self.coll.insert({'_id': form, 'counts': counts, 'concepts': concepts})
             except pymongo.errors.DuplicateKeyError as error:
