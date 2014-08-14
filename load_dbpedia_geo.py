@@ -18,8 +18,8 @@ from pymongo import MongoClient
 class DBPediaGeoParser():
 
     client = MongoClient('mongodb://localhost:27017/')
-    db = client.dbpedia
-    coll = db.geo
+    db = client.concepts
+    coll = db.dbpedia_geo
 
     line_patt = re.compile("""^<http://dbpedia.org/resource/(.*)> <http://www.georss.org/georss/point> "(.*) (.*)"@en .$""")
 

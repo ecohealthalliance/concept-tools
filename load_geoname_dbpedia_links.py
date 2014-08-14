@@ -19,7 +19,7 @@ from pymongo import MongoClient
 class GeonameLinksParser():
 
     client = MongoClient('mongodb://localhost:27017/')
-    db = client.dbpedia
+    db = client.concepts
     coll = db.geoname_links
 
     line_patt = re.compile("^<http://dbpedia.org/resource/(.*)> <http://www.w3.org/2002/07/owl#sameAs> <http://sws.geonames.org/(.*)/> .$")
