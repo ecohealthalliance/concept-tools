@@ -26,17 +26,18 @@ import codecs
 import argparse
 import urllib2
 
-from pymongo import MongoClient
+import pymongo
 
 class DictionaryParser():
 
-    client = MongoClient('mongodb://localhost:27017/')
+    client = pymongo.MongoClient('mongodb://localhost:27017/')
     db = client.concepts
     coll = db.crosswiki_dictionary
 
     line_patt = re.compile("^(.*)\t(\S+) (\S+) .*$")
     count_patt = re.compile(r"\b(w'|w|W|Wx):(\d+)\/(\d+)\b")
 
+    insertion_errors = []
 
     def parse(self, dictionary_file):
         """Parses the dictionary file and loads it into Mongo"""
@@ -48,6 +49,8 @@ class DictionaryParser():
         last_form = None
         concepts = []
         form_counts = {}
+
+        self.insertion_errors = []
 
         with codecs.open(dictionary_file, 'r', encoding='utf8', errors='ignore') as fp:
             for line in fp:
@@ -66,7 +69,7 @@ class DictionaryParser():
                     if last_form != None and form != last_form:
                         total_count = sum(form_counts.values())
                         form_counts['total'] = total_count
-                        self.coll.insert({'_id': last_form, 'counts': form_counts, 'concepts': concepts})
+                        self.insert(last_form, form_counts, concepts)
                         concepts = []
                         form_counts = {}
                     last_form = form
@@ -90,7 +93,24 @@ class DictionaryParser():
 
             total_count = sum(form_counts.values())
             form_counts['total'] = total_count
-            self.coll.insert({'_id': last_form, 'counts': form_counts, 'concepts': concepts})
+            self.insert(last_form, form_counts, concepts)
+
+        print "Done, all insertion_errors:"
+        print self.insertion_errors
+        print
+        print "lines", lines
+        print "non_matching_lines", non_matching_lines
+
+    def insert(self, form, counts, concepts):
+        try:
+            self.coll.insert({'_id': form, 'counts': counts, 'concepts': concepts})
+        except pymongo.errors.DuplicateKeyError as error:
+            print "ERROR"
+            print error
+            print
+            self.insertion_errors.append(error)
+
+
 
     def get_counts(self, line):
         return [ (key, int(num), int(den)) for key, num, den in self.count_patt.findall(line) ]
