@@ -99,6 +99,5 @@ if __name__ == '__main__':
     parser.add_argument('dictionary_file', metavar='dictionary_file', type=str,
         help='path to the crosswiki dictionary file')
     args = parser.parse_args()
-    print args.dictionary_file
     dp = DictionaryParser()
     dp.parse(args.dictionary_file)
