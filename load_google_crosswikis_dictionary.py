@@ -24,6 +24,7 @@ import sys
 import re
 import codecs
 import argparse
+import urllib2
 
 from pymongo import MongoClient
 
@@ -71,7 +72,8 @@ class DictionaryParser():
                     last_form = form
 
                     prob = float(match.groups()[1])
-                    concept = match.groups()[2]
+                    unicode_concept = match.groups()[2]
+                    concept = urllib2.unquote(unicode_concept.encode('utf8'))
 
                     if prob > 0:
                         counts = self.get_counts(line)

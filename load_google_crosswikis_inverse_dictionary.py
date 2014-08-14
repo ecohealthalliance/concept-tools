@@ -24,6 +24,7 @@ import sys
 import re
 import codecs
 import argparse
+import urllib2
 
 from pymongo import MongoClient
 
@@ -60,7 +61,8 @@ class InverseDictionaryParser():
                 if match:
 
                     matching_lines += 1
-                    concept = match.groups()[0]
+                    unicode_concept = match.groups()[0]
+                    concept = urllib2.unquote(unicode_concept.encode('utf8'))
 
                     if last_concept != None and concept != last_concept:
                         total_count = sum(concept_counts.values())
