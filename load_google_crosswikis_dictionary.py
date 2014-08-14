@@ -40,6 +40,7 @@ class DictionaryParser():
     insertion_errors = []
 
     min_concept_prob = 0.001
+    min_form_count = 100
 
     def parse(self, dictionary_file):
         """Parses the dictionary file and loads it into Mongo"""
@@ -85,7 +86,6 @@ class DictionaryParser():
                         counts_dict = dict([(key, num) for key, num, den in counts])
                         concepts.append({'prob': prob, 'concept': concept, 'counts': counts_dict})
 
-                        updated_counts = False
                         for key, num, den in counts:
                             form_counts[key] = den
 
@@ -104,13 +104,14 @@ class DictionaryParser():
         print "non_matching_lines", non_matching_lines
 
     def insert(self, form, counts, concepts):
-        try:
-            self.coll.insert({'_id': form, 'counts': counts, 'concepts': concepts})
-        except pymongo.errors.DuplicateKeyError as error:
-            print "ERROR"
-            print error
-            print
-            self.insertion_errors.append(error)
+        if counts['total_count'] > self.min_form_count:
+            try:
+                self.coll.insert({'_id': form, 'counts': counts, 'concepts': concepts})
+            except pymongo.errors.DuplicateKeyError as error:
+                print "ERROR"
+                print error
+                print
+                self.insertion_errors.append(error)
 
 
 
