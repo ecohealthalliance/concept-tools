@@ -32,7 +32,6 @@ class GeonameLinksParser():
 
         with codecs.open(inv_dict_file, 'r', encoding='utf8', errors='ignore') as fp:
             for line in fp:
-                print 'type(line)', type(line)
                 lines += 1
                 if lines % 1000 == 0:
                     print lines
