@@ -54,7 +54,8 @@ class InverseDictionaryParser():
 
                 lines += 1
                 if lines % 10000 == 0:
-                    print lines
+                    print 'lines', lines
+                    print 'non_matching_lines', non_matching_lines
                     print line
 
                 match = self.line_patt.match(line)
@@ -86,7 +87,7 @@ class InverseDictionaryParser():
 
                 else:
                     non_matching_lines += 1
-                    print "Non-matching line:", line
+
 
             total_count = sum(concept_counts.values())
             concept_counts['total'] = total_count
