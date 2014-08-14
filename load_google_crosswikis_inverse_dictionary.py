@@ -30,8 +30,8 @@ from pymongo import MongoClient
 class InverseDictionaryParser():
 
     client = MongoClient('mongodb://localhost:27017/')
-    db = client.wiki
-    coll = db.invdict
+    db = client.concepts
+    coll = db.crosswiki_invdict
 
     line_patt = re.compile("^(.*)\t(\S+) (.*)\t.*$")
     count_patt = re.compile(r"\b(w'|w|W|Wx):(\d+)\/(\d+)\b")
