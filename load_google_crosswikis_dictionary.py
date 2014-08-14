@@ -39,6 +39,8 @@ class DictionaryParser():
 
     insertion_errors = []
 
+    min_concept_prob = 0.001
+
     def parse(self, dictionary_file):
         """Parses the dictionary file and loads it into Mongo"""
 
@@ -78,7 +80,7 @@ class DictionaryParser():
                     unicode_concept = match.groups()[2]
                     concept = urllib2.unquote(unicode_concept.encode('utf8'))
 
-                    if prob > 0:
+                    if prob > self.min_concept_prob:
                         counts = self.get_counts(line)
                         counts_dict = dict([(key, num) for key, num, den in counts])
                         concepts.append({'prob': prob, 'concept': concept, 'counts': counts_dict})
