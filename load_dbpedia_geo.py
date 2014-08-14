@@ -2,7 +2,7 @@
 """
 http://wiki.dbpedia.org/Downloads32
 
-http://downloads.dbpedia.org/3.2/en/geo_en.nt.bz2
+http://downloads.dbpedia.org/3.9/en/geo_coordinates_en.nt.bz2
 
 Parse the geodata information from DBPedia
 """
@@ -21,7 +21,7 @@ class DBPediaGeoParser():
     db = client.dbpedia
     coll = db.geo
 
-    line_patt = re.compile("""^<http://dbpedia.org/resource/(.*)> <http://www.georss.org/georss/point> "(.*) (.*)" .$""")
+    line_patt = re.compile("""^<http://dbpedia.org/resource/(.*)> <http://www.georss.org/georss/point> "(.*) (.*)"@en .$""")
 
     def parse(self, geo_file):
 
