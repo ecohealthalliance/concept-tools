@@ -46,7 +46,10 @@ class LocationMigrator():
 
             for concept in dict_result['concepts']:
                 if self.has_geo_info(concept['concept']):
-                    location_concepts.append(concept)
+                    location_concepts.append(
+                        { 'id': concept['concept'],
+                          'counts': concept['counts'],
+                          'prob': concept['prob'] } )
 
             if len(location_concepts) > 0:
                 self.forms_coll.insert(
@@ -113,7 +116,6 @@ class LocationMigrator():
             return (result['lat'], result['lon'])
         else:
             return None
-
 
     def get_geoname_record(self, concept):
 
