@@ -99,8 +99,7 @@ class LocationMigrator():
                         { '_id': concept,
                           'type': 'location',
                           'lat': dbpedia_coords[0],
-                          'lon': dbpedia_coords[1],
-                          'geoname_id': long(geoname_record['geonameid']) } )
+                          'lon': dbpedia_coords[1] } )
                     return True
 
         return False
