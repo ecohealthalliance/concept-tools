@@ -98,8 +98,8 @@ class LocationMigrator():
                     self.concepts_coll.insert(
                         { '_id': concept,
                           'type': 'location',
-                          'lat': dbpedia_coords._1,
-                          'lon': dbpedia_coords._2,
+                          'lat': dbpedia_coords[0],
+                          'lon': dbpedia_coords[1],
                           'geoname_id': long(geoname_record['geonameid']) } )
                     return True
 
