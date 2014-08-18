@@ -50,7 +50,7 @@ class LocationMigrator():
 
             if len(location_concepts) > 0:
                 self.forms_coll.insert(
-                    { '_id': dict_result['_id']
+                    { '_id': dict_result['_id'],
                       'counts': dict_result['counts'],
                       'concepts': location_concepts } )
 
