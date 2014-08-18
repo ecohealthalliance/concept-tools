@@ -19,6 +19,10 @@ are wrong, and that what is presented for the dictionary file is actually for th
 inv.dict file.
 http://www-nlp.stanford.edu/pubs/crosswikis-data.tar.bz2/READ_ME.txt
 
+Typical usage:
+
+python load_google_crosswikis_inverse_dictionary.py ../inv.dict
+
 """
 
 import sys
@@ -30,6 +34,9 @@ import urllib2
 from pymongo import MongoClient
 
 class InverseDictionaryParser():
+
+    min_form_prob = 0.001
+    min_concept_count = 100
 
     client = MongoClient('mongodb://localhost:27017/')
     db = client.concepts
@@ -69,7 +76,7 @@ class InverseDictionaryParser():
                     if last_concept != None and concept != last_concept:
                         total_count = sum(concept_counts.values())
                         concept_counts['total'] = total_count
-                        self.coll.insert({'_id': concept, 'counts': concept_counts, 'forms': forms})
+                        self.insert(concept, concept_counts, forms)
                         forms = []
                         counts = {}
                     last_concept = concept
@@ -77,7 +84,7 @@ class InverseDictionaryParser():
                     prob = float(match.groups()[1])
                     form = match.groups()[2]
 
-                    if prob > 0:
+                    if prob > min_form_prob:
                         counts = self.get_counts(line)
                         counts_dict = dict([(key, num) for key, num, den in counts])
                         forms.append({'prob': prob, 'form': form, 'counts': counts_dict})
@@ -92,7 +99,18 @@ class InverseDictionaryParser():
 
             total_count = sum(concept_counts.values())
             concept_counts['total'] = total_count
-            self.coll.insert({'_id': last_concept, 'counts': concept_counts, 'forms': forms})
+
+            self.insert(last_concept, concept_counts, forms)
+
+    def insert(self, concept, counts, forms):
+        if counts['total'] > self.min_concept_count:
+            try:
+                self.coll.insert({'_id': concept, 'counts': counts, 'forms': forms})
+            except pymongo.errors.DuplicateKeyError as error:
+                print "ERROR"
+                print error
+                print
+                self.insertion_errors.append(error)
 
     def get_counts(self, line):
         return [ (key, int(num), int(den)) for key, num, den in self.count_patt.findall(line) ]
