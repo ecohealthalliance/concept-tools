@@ -46,7 +46,6 @@ class LocationMigrator():
 
             for concept in dict_result['concepts']:
                 if self.has_geo_info(concept['concept']):
-                    print concept['concept'], "has geo!"
                     location_concepts.append(concept)
 
             if len(location_concepts) > 0:
