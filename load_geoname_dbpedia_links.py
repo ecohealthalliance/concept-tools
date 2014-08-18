@@ -6,6 +6,11 @@ http://downloads.dbpedia.org/3.2/links/links_geonames_en.nt.bz2
 
 Parse the links between DBPedia resources (same as Wikipedia URL segments)
 and geoname ids.
+
+Typical usage:
+
+python load_geoname_dbpedia_links.py ~/Downloads/links_geonames_en.nt
+
 """
 
 import sys

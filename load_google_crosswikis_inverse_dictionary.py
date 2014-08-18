@@ -18,6 +18,7 @@ Note: I'm pretty sure that the descriptions in the README regarding the rational
 are wrong, and that what is presented for the dictionary file is actually for the
 inv.dict file.
 http://www-nlp.stanford.edu/pubs/crosswikis-data.tar.bz2/READ_ME.txt
+
 """
 
 import sys

@@ -5,6 +5,10 @@ http://wiki.dbpedia.org/Downloads32
 http://downloads.dbpedia.org/3.9/en/geo_coordinates_en.nt.bz2
 
 Parse the geodata information from DBPedia
+
+Typical usage:
+
+python load_dbpedia_geo.py ~/Downloads/geo_coordinates_en.nt
 """
 
 import sys
