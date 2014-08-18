@@ -84,7 +84,7 @@ class InverseDictionaryParser():
                     prob = float(match.groups()[1])
                     form = match.groups()[2]
 
-                    if prob > min_form_prob:
+                    if prob > self.min_form_prob:
                         counts = self.get_counts(line)
                         counts_dict = dict([(key, num) for key, num, den in counts])
                         forms.append({'prob': prob, 'form': form, 'counts': counts_dict})
