@@ -88,7 +88,7 @@ class DictionaryParser():
                     if prob > self.min_concept_prob:
                         counts = self.get_counts(line)
                         counts_dict = dict([(key, num) for key, num, den in counts])
-                        concepts.append({'prob': prob, 'concept': concept, 'counts': counts_dict})
+                        concepts.append({'prob': prob, 'id': concept, 'counts': counts_dict})
 
                         for key, num, den in counts:
                             form_counts[key] = den
