@@ -146,4 +146,4 @@ if __name__ == '__main__':
         help='path to the crosswiki dictionary file')
     args = parser.parse_args()
     dp = CrosswikisDictionaryParser()
-    dp.parse(args.dictionary_file)
+    dp.load_all(args.dictionary_file)
