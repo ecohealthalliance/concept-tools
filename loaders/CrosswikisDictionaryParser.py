@@ -116,17 +116,9 @@ class CrosswikisDictionaryParser():
 
 
     def insert(self, form, counts, concepts):
-        print "insert", form
-        print counts
-        print concepts
-        print "self.min_form_count", self.min_form_count
         if counts['total'] > self.min_form_count:
-            print "yes bigger"
             try:
-                print 'trying'
                 res = self.coll.insert({'_id': form, 'counts': counts, 'concepts': concepts})
-                print 'tried'
-                print 'res', res
 
             except pymongo.errors.DuplicateKeyError as error:
                 print "ERROR"
