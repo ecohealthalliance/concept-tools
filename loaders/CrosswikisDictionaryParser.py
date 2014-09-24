@@ -32,26 +32,32 @@ import urllib2
 
 import pymongo
 
-class DictionaryParser():
+class CrosswikisDictionaryParser():
 
-    client = pymongo.MongoClient('mongodb://localhost:27017/')
-    db = client.concepts
-    coll = db.crosswiki_dictionary
 
     line_patt = re.compile("^(.*)\t(\S+) (\S+) .*$")
     count_patt = re.compile(r"\b(w'|w|W|Wx):(\d+)\/(\d+)\b")
 
     insertion_errors = []
 
-    min_concept_prob = 0.001
-    min_form_count = 100
+    def __init__(self, min_concept_prob=0.001, min_form_count=100, coll=None):
+
+        self.min_concept_prob = min_concept_prob
+        self.min_form_count = min_form_count
+
+        if coll:
+            self.coll = coll
+        else:
+            client = pymongo.MongoClient('mongodb://localhost:27017/')
+            db = client.concepts
+            self.coll = db.crosswiki_dictionary
 
     def parse(self, dictionary_file):
         """Parses the dictionary file and loads it into Mongo"""
 
-        lines = 0
-        matching_lines = 0
-        non_matching_lines = 0
+        self.lines = 0
+        self.matching_lines = 0
+        self.non_matching_lines = 0
 
         last_form = None
         concepts = []
@@ -62,21 +68,21 @@ class DictionaryParser():
         with codecs.open(dictionary_file, 'r', encoding='utf8', errors='ignore') as fp:
             for line in fp:
 
-                lines += 1
-                if lines % 10000 == 0:
-                    print lines
+                self.lines += 1
+                if self.lines % 10000 == 0:
+                    print self.lines
                     print line
 
                 match = self.line_patt.match(line)
                 if match:
 
-                    matching_lines += 1
+                    self.matching_lines += 1
                     form = match.groups()[0]
 
                     if last_form != None and form != last_form:
                         total_count = sum(form_counts.values())
                         form_counts['total'] = total_count
-                        self.insert(last_form, form_counts, concepts)
+                        yield((last_form, form_counts, concepts))
                         concepts = []
                         form_counts = {}
                     last_form = form
@@ -94,23 +100,34 @@ class DictionaryParser():
                             form_counts[key] = den
 
                 else:
-                    non_matching_lines += 1
+                    self.non_matching_lines += 1
                     print "Non-matching line:", line
 
             total_count = sum(form_counts.values())
             form_counts['total'] = total_count
+            yield((last_form, form_counts, concepts))
+
+
+    def load_all(self, dictionary_file):
+
+        for last_form, form_counts, concepts in self.parse(dictionary_file):
+
             self.insert(last_form, form_counts, concepts)
 
-        print "Done, all insertion_errors:"
-        print self.insertion_errors
-        print
-        print "lines", lines
-        print "non_matching_lines", non_matching_lines
 
     def insert(self, form, counts, concepts):
+        print "insert", form
+        print counts
+        print concepts
+        print "self.min_form_count", self.min_form_count
         if counts['total'] > self.min_form_count:
+            print "yes bigger"
             try:
-                self.coll.insert({'_id': form, 'counts': counts, 'concepts': concepts})
+                print 'trying'
+                res = self.coll.insert({'_id': form, 'counts': counts, 'concepts': concepts})
+                print 'tried'
+                print 'res', res
+
             except pymongo.errors.DuplicateKeyError as error:
                 print "ERROR"
                 print error
@@ -128,5 +145,5 @@ if __name__ == '__main__':
     parser.add_argument('dictionary_file', metavar='dictionary_file', type=str,
         help='path to the crosswiki dictionary file')
     args = parser.parse_args()
-    dp = DictionaryParser()
+    dp = CrosswikisDictionaryParser()
     dp.parse(args.dictionary_file)
