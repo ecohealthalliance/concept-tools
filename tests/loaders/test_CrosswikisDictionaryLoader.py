@@ -13,8 +13,6 @@ from loaders import CrosswikisDictionaryParser
 
 class CrosswikisDictionaryParserTest(unittest.TestCase):
 
-    filename = os.path.join(os.path.dirname(__file__), 'resources/rabies.md')
-
     def setUp(self):
 
         self.loader = CrosswikisDictionaryParser.CrosswikisDictionaryParser(
