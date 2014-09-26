@@ -37,6 +37,8 @@ class CrosswikisInverseDictionaryParser:
     line_patt = re.compile("^(.*)\t(\S+) (.*)\t.*$")
     count_patt = re.compile(r"\b(w'|w|W|Wx):(\d+)\/(\d+)\b")
 
+    insertion_errors = []
+
     def __init__(self, coll=None, min_form_prob=0.0001, min_concept_count=100):
 
         self.min_form_prob = min_form_prob
@@ -47,7 +49,7 @@ class CrosswikisInverseDictionaryParser:
         else:
             client = pymongo.MongoClient('mongodb://localhost:27017/')
             db = client.concepts
-            self.coll = db.crosswiki_invdict
+            self.coll = db.crosswiki_inverse_dictionary
 
 
     def parse(self, inverse_dictionary_file):
