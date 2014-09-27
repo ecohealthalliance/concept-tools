@@ -103,7 +103,6 @@ class CrosswikisInverseDictionaryParser:
                             concept_counts[key] = den
 
                 else:
-                    print "non matching line:", line
                     non_matching_lines += 1
 
 
