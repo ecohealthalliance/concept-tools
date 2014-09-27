@@ -39,7 +39,7 @@ class CrosswikisInverseDictionaryParser:
 
     insertion_errors = []
 
-    def __init__(self, coll=None, min_form_prob=0.0001, min_concept_count=100):
+    def __init__(self, coll=None, min_form_prob=0.001, min_concept_count=100):
 
         self.min_form_prob = min_form_prob
         self.min_concept_count = min_concept_count
@@ -68,9 +68,12 @@ class CrosswikisInverseDictionaryParser:
 
                 lines += 1
                 if lines % 10000 == 0:
-                    print 'lines', lines
-                    print 'non_matching_lines', non_matching_lines
-                    print line
+                    try:
+                        print 'lines', lines
+                        print 'non_matching_lines', non_matching_lines
+                        print line
+                    except:
+                        print "error printing the lines"
 
                 match = self.line_patt.match(line)
                 if match:
@@ -82,9 +85,9 @@ class CrosswikisInverseDictionaryParser:
                     if last_concept != None and concept != last_concept:
                         total_count = sum(concept_counts.values())
                         concept_counts['total'] = total_count
-                        yield (concept, concept_counts, forms)
+                        yield (last_concept, concept_counts, forms)
                         forms = []
-                        counts = {}
+                        concept_counts = {}
                     last_concept = concept
 
                     prob = float(match.groups()[1])
@@ -100,6 +103,7 @@ class CrosswikisInverseDictionaryParser:
                             concept_counts[key] = den
 
                 else:
+                    print "non matching line:", line
                     non_matching_lines += 1
 
 

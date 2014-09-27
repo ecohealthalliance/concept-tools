@@ -6,6 +6,7 @@ import sys
 import os
 import unittest
 import pymongo
+import json
 
 sys.path = ['./'] + sys.path
 
@@ -60,6 +61,32 @@ class CrosswikisInverseDictionaryParserTest(unittest.TestCase):
         self.assertEqual(record['forms'][1]['id'], "Wikipedia: 'Maine'")
 
 
+    def test_1978_parsing(self):
+
+        loader = CrosswikisInverseDictionaryParser.CrosswikisInverseDictionaryParser()
+
+        filename = os.path.join(os.path.dirname(__file__), 'resources/inv.dict.1978')
+
+        parsed = list(loader.parse(filename))
+
+        print "\n\nparsed:"
+        print json.dumps(parsed, indent=4)
+        print
+        print
+
+        self.assertEqual(len(parsed), 5)
+
+        record = parsed[4]
+        concept = record[0]
+        concept_counts = record[1]
+        forms = record[2]
+
+        self.assertEqual(concept, '1978')
+        self.assertEqual(concept_counts['total'], 175474)
+        self.assertEqual(len(forms), 54)
+        self.assertEqual(forms[0]['id'], '1978')
+        self.assertEqual(forms[0]['prob'], 0.739346)
+        self.assertEqual(forms[1]['id'], "Wikipedia: '1978'")
 
 
 if __name__ == '__main__':
