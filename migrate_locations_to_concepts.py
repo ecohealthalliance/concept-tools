@@ -34,6 +34,9 @@ class LocationMigrator():
     concepts_coll = db.concepts
     all_countries_coll = client.geonames.allCountries
 
+    concepts_coll.ensure_index({'type': 1})
+    dbpedia_geo_coll.ensure_index({'geonameid': 1})
+
     def migrate(self):
 
         dict_results = self.crosswiki_dictionary.find(timeout=False)
