@@ -44,7 +44,7 @@ class LocationMigrator():
 
             location_concepts = []
 
-            print "dict_result has form", dict_result['id']
+            print "dict_result has form", dict_result['_id']
 
             for concept in dict_result['concepts']:
                 print 'concept:', concept
