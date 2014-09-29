@@ -45,9 +45,9 @@ class LocationMigrator():
             location_concepts = []
 
             for concept in dict_result['concepts']:
-                if self.has_geo_info(concept['concept']):
+                if self.has_geo_info(concept['id']):
                     location_concepts.append(
-                        { 'id': concept['concept'],
+                        { 'id': concept['id'],
                           'counts': concept['counts'],
                           'prob': concept['prob'] } )
 
