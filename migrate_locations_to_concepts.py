@@ -141,7 +141,7 @@ class LocationMigrator():
         geoname_id = self.get_geoname_id(concept)
 
         if geoname_id:
-            result = self.all_countries_coll.find_one({'geonamedid': str(geoname_id)})
+            result = self.all_countries_coll.find_one({'geonameid': str(geoname_id)})
         else:
             return None
 
@@ -151,8 +151,10 @@ class LocationMigrator():
 
         result = self.geoname_links_coll.find_one({'_id': concept})
         if result:
+            print "got get_geoname_id", result['geoname_id']
             return result['geoname_id']
         else:
+            print "got no get_geoname_id"
             return None
 
 
