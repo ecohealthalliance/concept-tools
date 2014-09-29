@@ -47,26 +47,20 @@ class LocationMigrator():
 
             location_concepts = []
 
-            print "dict_result has form", dict_result['_id']
-
             for concept in dict_result['concepts']:
-                print 'concept:', concept
                 if self.has_geo_info(concept['id']):
-                    print 'concept has geo info'
                     location_concepts.append(
                         { 'id': concept['id'],
                           'counts': concept['counts'],
                           'prob': concept['prob'] } )
 
             if len(location_concepts) > 0:
-                print "has some location_concepts", location_concepts
                 self.forms_coll.insert(
                     { '_id': dict_result['_id'],
                       'counts': dict_result['counts'],
                       'concepts': location_concepts } )
-            print "\n\n\n"
             i += 1
-            if i % 10000 == 0:
+            if i % 1000 == 0:
                 print i
                 print 'result:', dict_result
                 print "location_concepts", location_concepts
@@ -90,16 +84,12 @@ class LocationMigrator():
         depending on whether or not there is any geo info.
         """
 
-        print "checking geo_info", concept
-
         if self.concepts_coll.find_one({'_id': concept, 'type': 'location'}):
-            print "concept", concept, "already in concepts"
             return True
         else:
             geoname_record = self.get_geoname_record(concept)
 
             if geoname_record:
-                print "concept", concept, "has geoname record"
                 self.concepts_coll.insert(
                     { '_id': concept,
                       'type': 'location',
@@ -110,22 +100,17 @@ class LocationMigrator():
             else:
                 dbpedia_coords = self.get_dbpedia_coords(concept)
                 if dbpedia_coords:
-                    print "concept", concept, "has dbpedia coords"
                     self.concepts_coll.insert(
                         { '_id': concept,
                           'type': 'location',
                           'lat': dbpedia_coords[0],
                           'lon': dbpedia_coords[1] } )
                     return True
-                else:
-                    print "concept", concept, 'was not in concepts, had no linked geoname record, and no dbpedia_coords'
 
         return False
 
 
     def get_dbpedia_coords(self, concept):
-
-        print "getting dbpedia_coords", concept
 
         result = self.dbpedia_geo_coll.find_one({'_id': concept})
 
@@ -136,8 +121,6 @@ class LocationMigrator():
 
     def get_geoname_record(self, concept):
 
-        print "getting geoname_record", concept
-
         geoname_id = self.get_geoname_id(concept)
 
         if geoname_id:
@@ -147,17 +130,11 @@ class LocationMigrator():
 
     def get_geoname_id(self, concept):
 
-        print "getting geoname_id", concept
-
         result = self.geoname_links_coll.find_one({'_id': concept})
         if result:
-            print "got get_geoname_id", result['geoname_id']
             return result['geoname_id']
         else:
-            print "got no get_geoname_id"
             return None
-
-
 
 
 if __name__ == '__main__':
