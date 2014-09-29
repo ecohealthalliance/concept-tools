@@ -90,6 +90,8 @@ class LocationMigrator():
         depending on whether or not there is any geo info.
         """
 
+        print "checking geo_info", concept
+
         if self.concepts_coll.find_one({'_id': concept, 'type': 'location'}):
             print "concept", concept, "already in concepts"
             return True
@@ -123,6 +125,8 @@ class LocationMigrator():
 
     def get_dbpedia_coords(self, concept):
 
+        print "getting dbpedia_coords", concept
+
         result = self.dbpedia_geo_coll.find_one({'_id': concept})
 
         if result:
@@ -132,6 +136,8 @@ class LocationMigrator():
 
     def get_geoname_record(self, concept):
 
+        print "getting geoname_record", concept
+
         geoname_id = self.get_geoname_id(concept)
 
         if geoname_id:
@@ -140,6 +146,9 @@ class LocationMigrator():
             return None
 
     def get_geoname_id(self, concept):
+
+        print "getting geoname_id", concept
+
         result = self.geoname_links_coll.find_one({'_id': concept})
         if result:
             return result['geoname_id']
