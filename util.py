@@ -1,15 +1,13 @@
 #!/usr/bin/env python
 """Utility functions for concepts"""
 
-def is_meta(title):
-    """Is the article a meta page, based on the title?"""
-    meta_prefixes = [
-        'List of ',
+meta_prefixes = [
+        'List_of_',
         'Meta:',
         'Help:',
         'Template:',
         'Talk:',
-        'User talk:',
+        'User_talk:',
         'User:',
         'Portal:',
         'Category:',
@@ -18,7 +16,7 @@ def is_meta(title):
         'File:',
         'Book:',
         'Draft:',
-        'Education Program:',
+        'Education_Program:',
         'TimedText:',
         'Module:',
         'WP:',
@@ -26,9 +24,12 @@ def is_meta(title):
         'CAT:',
         'WT:',
         'MOS:',
-        'Wikipedia talk:',
+        'Wikipedia_talk:',
         'Special:',
         'Transwiki:']
+
+def is_meta(title):
+    """Is the article a meta page, based on the title?"""
 
     for meta_prefix in meta_prefixes:
         if title.startswith(meta_prefix):
