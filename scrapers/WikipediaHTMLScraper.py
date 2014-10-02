@@ -18,6 +18,7 @@ import pymongo
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 
 from loaders import DBPediaTitlesParser
+from util import is_meta
 
 class WikipediaHTMLScraper():
 
@@ -83,7 +84,8 @@ if __name__ == '__main__':
 
     for title, display in titles:
         i += 1
-        if i % 10000 == 0:
-            print i, title, display
-        ws.request_and_store_page(title)
+        if i % 10 == 0:
+            print i, title, display, is_meta(title)
+        if not is_meta(title):
+            ws.request_and_store_page(title)
 
