@@ -1,13 +1,19 @@
 #!/usr/bin/env python
 """
+Load geo location data from the wikidata JSON file:
 
+http://dumps.wikimedia.org/other/wikidata/20141013.json.gz
 
 """
-
+import sys
+import os
 import codecs
 import argparse
 import pymongo
 import json
+
+sys.path.insert(1, os.path.join(sys.path[0], '..'))
+from util import get_canonical_id_from_title
 
 class WikidataJSONParser:
 
@@ -68,13 +74,14 @@ class WikidataJSONParser:
                                 lat = claim['mainsnak']['datavalue']['value']['latitude']
                                 lon = claim['mainsnak']['datavalue']['value']['longitude']
                                 article = self.get_article_name(obj)
+                                article_id = get_canonical_id_from_title(article)
 
                                 if article:
                                     yielded += 1
                                     if yielded % 100 == 0:
-                                        print 'yielded:', yielded, article, lat, lon
+                                        print 'yielded:', yielded, article_id, lat, lon
                                         print
-                                    yield (article, lat, lon)
+                                    yield (article_id, lat, lon)
 
                 lines += 1
 
