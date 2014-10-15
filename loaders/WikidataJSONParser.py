@@ -40,17 +40,20 @@ class WikidataJSONParser:
         forms = []
         concept_counts = {}
 
+        i = 0
+        yielded = 0
+
         with codecs.open(wikidata_json_file, 'r', encoding='utf8', errors='ignore') as fp:
             for line in fp:
 
+                i += 1
+
+                if 1 % 1000 == 0:
+                    print 'i', i
+                    print
+
                 if lines > 0:
                     obj = json.loads(line.replace(',\n', ''))
-
-                    try:
-                        print "x:", obj['claims']['P625']
-                        print
-                    except KeyError:
-                        pass
 
                     if ('claims' in obj and
                         'P625' in obj['claims']):
@@ -67,7 +70,10 @@ class WikidataJSONParser:
                                 article = self.get_article_name(obj)
 
                                 if article:
-                                    print article, lat, lon
+                                    yielded += 1
+                                    if yielded % 100 == 0:
+                                        print 'yielded:', yielded, article, lat, lon
+                                        print
                                     yield (article, lat, lon)
 
                 lines += 1
@@ -76,11 +82,13 @@ class WikidataJSONParser:
     def load_all(self, wikidata_json_file):
 
         for article, lon, lat in self.parse(wikidata_json_file):
-            print
             self.insert(article, lat, lon)
 
     def insert(self, article, lat, lon):
-        self.coll.insert( { '_id': article, 'lat': lat, 'lon': lon } )
+        try:
+            self.coll.insert( { '_id': article, 'lat': lat, 'lon': lon } )
+        except pymongo.errors.DuplicateKeyError:
+            print "DuplicateKeyError:", article
 
 if __name__ == '__main__':
 
