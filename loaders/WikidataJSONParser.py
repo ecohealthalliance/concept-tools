@@ -74,9 +74,9 @@ class WikidataJSONParser:
                                 lat = claim['mainsnak']['datavalue']['value']['latitude']
                                 lon = claim['mainsnak']['datavalue']['value']['longitude']
                                 article = self.get_article_name(obj)
-                                article_id = get_canonical_id_from_title(article)
 
                                 if article:
+                                    article_id = get_canonical_id_from_title(article)
                                     yielded += 1
                                     if yielded % 100 == 0:
                                         print 'yielded:', yielded, article_id, lat, lon
