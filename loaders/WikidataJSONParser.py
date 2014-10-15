@@ -48,7 +48,7 @@ class WikidataJSONParser:
 
                 i += 1
 
-                if 1 % 1000 == 0:
+                if i % 1000 == 0:
                     print 'i', i
                     print
 
