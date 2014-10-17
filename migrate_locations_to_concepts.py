@@ -28,6 +28,7 @@ class LocationMigrator():
     client = MongoClient('mongodb://localhost:27017/')
     db = client.concepts
     dbpedia_geo_coll = db.dbpedia_geo
+    wikidata_geo_coll = db.wikidata_geo
     geoname_links_coll = db.geoname_links
     crosswiki_dictionary = db.crosswiki_dictionary
     forms_coll = db.forms
@@ -106,6 +107,15 @@ class LocationMigrator():
                           'lat': dbpedia_coords[0],
                           'lon': dbpedia_coords[1] } )
                     return True
+                else:
+                    wikidata_coords = self.get_wikidata_coords(concept)
+                    if wikidata_coords:
+                        self.concepts_coll.insert(
+                            { '_id': concept,
+                              'type': 'location',
+                              'lat': wikidata_coords[0],
+                              'lon': wikidata_coords[1] } )
+                        return True
 
         return False
 
@@ -113,6 +123,15 @@ class LocationMigrator():
     def get_dbpedia_coords(self, concept):
 
         result = self.dbpedia_geo_coll.find_one({'_id': concept})
+
+        if result:
+            return (result['lat'], result['lon'])
+        else:
+            return None
+
+    def get_wikidata_coords(self, concept):
+
+        result = self.wikidata_geo_coll.find_one({'_id': concept})
 
         if result:
             return (result['lat'], result['lon'])
