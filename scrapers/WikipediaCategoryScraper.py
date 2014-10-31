@@ -62,7 +62,7 @@ class WikipediaCategoryScraper():
                 if category_match:
                     category_id = get_canonical_id_from_url_segment( category_match.groups()[0] )
                     form = link.text
-                    subcategories.add( (_id, form) )
+                    subcategories.add( (category_id, form) )
                 else:
                     article_match = self.article_pat.match(href)
                     if article_match:
@@ -73,7 +73,7 @@ class WikipediaCategoryScraper():
 
         return (subcategories, articles)
 
-    def get_all_subcategories_and_articles(self, category, level=3):
+    def get_all_subcategories_and_articles(self, category, article_limit=100):
 
         html = self.request_category_page_html(category)
 
@@ -86,7 +86,7 @@ class WikipediaCategoryScraper():
             else:
                 checked_subcategories.add(category)
 
-        while len(unchecked_subcategories):
+        while len(unchecked_subcategories) and len(articles) <= article_limit:
 
             subcategory = unchecked_subcategories.pop()
             print "doing sc:", subcategory
